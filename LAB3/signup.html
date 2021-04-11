@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>The Shop</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+           
+</head>
+
+<body>
+    <h1>Welcome to the Shop</h1>
+
+    <p>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+</p>
+    
+    <form method= "post" action= "http://www.example.com">
+        <p>
+            <h3>Required Information</h3>
+
+            <label>
+                First Name:
+                <input name="fname" type="text" autocomplete="on" autofocus required />
+            </label>
+            <br />
+
+            <label>
+                Last Name:
+                <input name="lname" type="text" autocomplete="on" required />
+            </label>
+
+            <br />
+            <label>
+                Birthday:
+                <input name="date" type="date" required />
+            </label>
+
+            <br />
+            <label>
+                Telephone Number:
+                <input name="tel" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
+            </label> ###-###-####
+
+            <br />
+            <label>
+                Email:
+                <input name="email" type="email" placeholder="name@domain.com" required />
+            </label> (name@domain.com)
+            <br />
+            <label>
+                ID:
+                <input name="id" type="text" autocomplete="off" required />
+            </label>
+            <br />
+            <label>
+                Password:
+                <input name="password" type="password" required />
+            </label>
+            
+        </p>
+
+        <br />
+
+        <p>
+            <h3>Optional Information</h3>
+
+            <label>
+                Favorite Color:
+                <input name="color" type="color" />
+            </label>
+            <br />
+            <label>
+                Favorite Number:
+                <input name="number" type="number" min="0" max="100" step="1" />
+            </label>
+            (Enter a number between 0 and 100)
+            <br />
+            <div><input type="submit" value="Signup" />
+            <input type="reset" value="Clear" /></div>
+        </p>
+
+
+
+
+
+
+
+    </form>
+    
+</body>
+
+</html>

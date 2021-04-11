@@ -1,0 +1,70 @@
+h1 {
+    text-align: center;
+    font-size: 50pt;
+    font-family: 'Times New Roman';
+    color: blue;
+    background-color: gray;
+}
+
+div {
+    background-color: greenyellow;
+    text-align: center;
+    padding: 5px;
+    margin: 10px;
+    border: solid;
+    width: 130px;
+    height: 25px;
+}
+
+div.a {
+    margin: auto;
+    text-align: left;
+    width: 500px;
+    height: 50px;
+}
+
+div.b {
+    background-color: blue;
+    margin: auto;
+    text-align: center;
+    padding: 125px;
+    width: 250px;
+    height: 250px
+}
+
+h2.a {
+    position: relative;
+    animation: motion linear 2s 0s 1 normal;
+}
+@keyframes motion
+{
+    0% {left:200px}
+    100% {left:0px}
+}
+
+img.a
+{
+    margin: auto;
+    width: 250px;
+    height: 250px;
+    transition: transform 2s;
+}
+img.a:hover
+{
+    transform: scale(2, 2);
+}
+
+section {
+    column-count: 3;
+    column-gap: 30px;
+    column-width: 50px;
+    column-rule-width: 5px;
+    column-rule-style: outset;
+    column-rule-color: orange;
+}
+
+p.a{
+    text-align: center;
+}
+
+}
