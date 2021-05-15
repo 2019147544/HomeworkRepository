@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Cool Image 1",
+    "image": "Cool Image 1.jpg",
+    "artist": "Julian-Faylona",
+    "price": 100
+  },
+
+  {
+    "name": "Libertas",
+    "image": "Libertas.jpg",
+    "artist": "Unknown",
+    "price": 200
+  },
+
+  {
+    "name": "Temp",
+    "image": "Temp.jpg",
+    "artist": "Julian-Faylona",
+    "price": 1000
+  }
+]
