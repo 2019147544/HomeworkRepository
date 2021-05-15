@@ -65,9 +65,50 @@
 
   {
     "postId": 3,
+    "name": "Oceana",
+    "image": "oceana.jpg",
+    "artist": "zacky7avenged",
+    "price": 300
+  },
+
+  {
+    "postId": 3,
+    "name": "Oracle",
+    "image": "oracle.jpg",
+    "artist": "zacky7avenged",
+    "price": 300
+  },
+
+  {
+    "postId": 3,
     "name": "Perpendicularity",
     "image": "perpendicularity.jpg",
     "artist": "Julian-Faylona",
     "price": 300
+  },
+
+  {
+    "postId": 3,
+    "name": "Red Communion",
+    "image": "Red_Communion.jpg",
+    "artist": "Carlos-Quevedo",
+    "price": 300
+  },
+
+  {
+    "postId": 3,
+    "name": "The Visitation",
+    "image": "the_visitation.jpg",
+    "artist": "Julian-Faylona",
+    "price": 300
+  },
+
+  {
+    "postId": 3,
+    "name": "Theater District",
+    "image": "theater_district.jpg",
+    "artist": "Julian-Faylona",
+    "price": 300
   }
+  
 ]
