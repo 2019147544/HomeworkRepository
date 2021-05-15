@@ -1,22 +1,73 @@
 [
   {
-    "name": "Cool Image 1",
-    "image": "Cool Image 1.jpg",
+    "postId": 1,
+    "name": "Binary Mass",
+    "image": "binary_mass.jpg",
     "artist": "Julian-Faylona",
     "price": 100
   },
 
   {
-    "name": "Libertas",
-    "image": "Libertas.jpg",
-    "artist": "Unknown",
+    "postId": 1,
+    "name": "Circle Guardian",
+    "image": "circle_guardian.jpg",
+    "artist": "zacky7avenged",
     "price": 200
   },
 
   {
-    "name": "Temp",
-    "image": "Temp.jpg",
+    "postId": 1,
+    "name": "Death Priestess",
+    "image": "Death_Priestess.jpg",
+    "artist": "Carlos-Quevedo",
+    "price": 1000
+  },
+
+  {
+    "postId": 2,
+    "name": "Eve II",
+    "image": "Eve_II.jpg",
+    "artist": "Carlos-Quevedo",
+    "price": 1000
+  },
+  
+  {
+    "postId": 2,
+    "name": "Ishtar",
+    "image": "Ishtar.jpg",
+    "artist": "Carlos-Quevedo",
+    "price": 700
+  },
+
+  {
+    "postId": 2,
+    "name": "Lattice Glitch",
+    "image": "lattice_glitch.jpg",
+    "artist": "Julian-Faylona",
+    "price": 100
+  },
+
+  {
+    "postId": 3,
+    "name": "Machination",
+    "image": "machination.jpg",
+    "artist": "Julian-Faylona",
+    "price": 600
+  },
+
+  {
+    "postId": 3,
+    "name": "Matriception",
+    "image": "matriception.jpg",
     "artist": "Julian-Faylona",
     "price": 1000
+  },
+
+  {
+    "postId": 3,
+    "name": "Perpendicularity",
+    "image": "perpendicularity.jpg",
+    "artist": "Julian-Faylona",
+    "price": 300
   }
 ]
