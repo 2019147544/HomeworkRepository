@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>The Shop</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    
+</head>
+
+<body>
+    <header><div class="a"><h2 class="a">Welcome to the Shop</h2></div></header>
+
+    <p>
+        <div class="a">
+            <nav>
+                <a href="index.html">Main Page</a>
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+            </nav>
+        </div>
+    </p>
+
+
+    <div class="c">
+        <form>
+            <label>
+                Choose an artist:<br />
+                <select name="artist" id="artist">
+                    <option selected>All</option>
+                    <option>Julian-Faylona</option>
+                    <option>zacky7avenged</option>
+                    <option>Carlos-Quevedo</option>
+                </select>
+            </label>
+
+            <p>
+                <label>
+                    Enter title of item:<br />
+                    <input type="search" id="search"/>
+                </label>
+            </p>
+
+        </form>
+
+
+        <button id="button">Filter results</button>
+
+        <p id="a">Put mouse over image to see more!</p>
+
+    </div>
+
+        <p id="items">
+        </p>
+    
+
+    <script>
+        let image_objects = [];
+        let cnt = 0;
+        
+
+        let json_file = "./product.json";
+        fetch(json_file)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            image_objects = data;
+            show();
+        })
+
+        .catch(function(error){
+            window.alert(error);
+        });
+
+        let artist = document.getElementById("artist");
+        let search = document.getElementById("search");
+        let items = document.getElementById("items");
+
+        document.getElementById("button").addEventListener("click", clear_and_show);
+        window.addEventListener("scroll", scroll);
+       
+        function scroll(){
+            if(window.innerHeight + window.scrollY >= document.body.offsetHeight){
+                show();
+            }
+        }
+
+
+        function show_image(id){
+            let image_object = image_objects[id];
+
+            let img = document.createElement("img");
+            img.width = "450";
+            img.height = "450";
+            img.id = id 
+            img.alt = image_object.name;
+            img.src = "Images/" + image_object.image;
+            img.addEventListener("mouseover", mouse_over);
+            img.addEventListener("mouseout", mouse_out);
+
+            let div = document.createElement("div");
+            div.classList.add("d");
+            div.appendChild(img);
+                
+            let br = document.createElement("br")
+
+            items.appendChild(div);
+            items.appendChild(br);
+        }
+
+
+        function mouse_over(e){
+            if(e.target.tagName.toLowerCase() == "img" && e.target.parentElement.childNodes.length == 1){
+                e.target.parentElement.style.height = "540px";
+                let p = document.createElement("p");
+                p.innerHTML = "Name: " + image_objects[e.target.id].name;
+                p.innerHTML += "<br/>";
+                p.innerHTML += "Artist: " + image_objects[e.target.id].artist;
+                p.innerHTML += "<br/>";
+                p.innerHTML += "Price: $" + image_objects[e.target.id].price;
+                e.target.parentElement.appendChild(p);
+            }
+        }
+
+        function mouse_out(e){
+            if(e.target.tagName.toLowerCase() == "img"){
+                e.target.parentElement.style.height = "450px";
+                p = e.target.parentElement.querySelector("p");
+                p.remove();
+            }
+        }
+
+
+        function clear_and_show(){
+            show(true);
+        }
+
+        let index_to_start = 0;
+
+        function show(clear_all = false){
+            // if the button is pressed
+            // clear all images shown before
+            // and reset index_to_start to zero
+            if(clear_all){
+                divs = items.querySelectorAll("div"); 
+                brs = items.querySelectorAll("br");
+                for(div of divs){
+                    div.remove();
+                }
+                for(br of brs){
+                    br.remove();
+                }
+                index_to_start = 0;
+            }
+
+
+            // now show up to 3 images that satisfy the conditions given by user
+            counter = 0;
+            for(let index = index_to_start; index < image_objects.length; index_to_start = ++index){
+                if(artist.value == "All" || artist.value == image_objects[index].artist){
+                    if(search.value == "" || search.value == image_objects[index].name){
+                        show_image(index);
+                        counter++;
+                        if(counter == 3){
+                            index_to_start = index + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
