@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>The Shop</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    
+</head>
+
+<body>
+    <header><div class="a"><h2 class="a">Welcome to the Shop</h2></div></header>
+
+    <p>
+        <div class="a">
+            <nav>
+                <a href="index.html">Main Page</a>
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+            </nav>
+        </div>
+    </p>
+
+
+    <div class="c">
+        <form>
+            <label>
+                Choose an artist:<br />
+                <select name="artist" id="artist">
+                    <option selected>All</option>
+                    <option>Julian-Faylona</option>
+                    <option>zacky7avenged</option>
+                    <option>Carlos-Quevedo</option>
+                </select>
+            </label>
+
+            <p>
+                <label>
+                    Enter title of item:<br />
+                    <input type="search" id="search"/>
+                </label>
+            </p>
+
+        </form>
+
+
+        <button id="button">Filter results</button>
+
+        <p id="a">Put mouse over image to see more!</p>
+
+    </div>
+
+        <p id="items">
+        </p>
+    
+
+    <script>
+        //let images = []
+        let image_objects = [];
+        let cnt = 0;
+        
+
+        let json_file = "https://2019147544.github.io/HomeworkRepository/test2/product.json";
+        //let json_file = "https://2019147544.github.io/HomeworkRepository/test2/product.json?postId=1";
+        fetch(json_file)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            image_objects = data;
+            show();
+        })
+
+
+        /*
+        .then(function(data){
+            //document.getElementById("a").innerHTML = data[0].name;
+            //x = data[0].name;
+            //window.alert(data[1].image);
+            //window.alert(data.length);
+            //window.alert(typeof data);
+            for(let index = 0; index < data.length; index++){
+                images.push(data[index].name);
+                window.alert(images.length);
+                window.alert(images[images.length - 1]);
+                cnt++;
+            }
+        })*/
+        .catch(function(error){
+            window.alert(error);
+        });
+        
+        //window.alert(images.length);
+        //window.alert(cnt);
+        
+        //window.alert(images.length);
+        //window.alert(images[0]);
+
+        //document.getElementById("a").innerHTML = x;
+        //window.alert(x);
+
+
+
+
+        //let images = ["Cool Image 1.jpg", "Libertas.jpg", "Temp.jpg"];
+
+        let artist = document.getElementById("artist");
+        let search = document.getElementById("search");
+        let items = document.getElementById("items");
+
+        
+        document.getElementById("button").addEventListener("click", clear_and_show);
+        window.addEventListener("scroll", scroll);
+      
+        //document.addEventListener("DOMContentLoaded", initial_show);
+        //document.querySelector("button").addEventListener("click", show);
+       
+        function scroll(){
+            if(window.innerHeight + window.scrollY >= document.body.offsetHeight){
+                show();
+            }
+        }
+
+
+
+
+
+
+        function initial_show(){
+            for(let image_name of images){
+                let img = document.createElement("img");
+                img.width = "450";
+                img.height = "450";
+                img.id = image_name;
+                img.alt = image_name;
+                img.src = image_name;
+                img.addEventListener("mouseover", mouse_over);
+                img.addEventListener("mouseout", mouse_out);
+
+               
+
+                let div = document.createElement("div");
+                div.classList.add("d");
+                div.appendChild(img);
+                //div.appendChild(p);
+                div.addEventListener("mouseover", mouse_over);
+                div.addEventListener("mouseout", mouse_out);
+                
+                let br = document.createElement("br")
+
+                items.appendChild(div);
+                items.appendChild(br);
+            }
+        }
+
+        function show_image(id){
+            let image_object = image_objects[id];
+
+            let img = document.createElement("img");
+            img.width = "450";
+            img.height = "450";
+            img.id = id  //image_object.name;
+            img.alt = image_object.name;
+            img.src = "Images/" + image_object.image;
+            img.addEventListener("mouseover", mouse_over);
+            img.addEventListener("mouseout", mouse_out);
+
+            let div = document.createElement("div");
+            div.classList.add("d");
+            div.appendChild(img);
+            //div.appendChild(p);
+            //div.addEventListener("mouseover", mouse_over);
+            //div.addEventListener("mouseout", mouse_out);
+                
+            let br = document.createElement("br")
+
+            items.appendChild(div);
+            items.appendChild(br);
+        }
+
+
+        function mouse_over(e){
+            if(e.target.tagName.toLowerCase() == "img" && e.target.parentElement.childNodes.length == 1){
+                e.target.parentElement.style.height = "540px";
+                let p = document.createElement("p");
+                p.innerHTML = "Name: " + image_objects[e.target.id].name;
+                p.innerHTML += "<br/>";
+                p.innerHTML += "Artist: " + image_objects[e.target.id].artist;
+                p.innerHTML += "<br/>";
+                p.innerHTML += "Price: $" + image_objects[e.target.id].price;
+                e.target.parentElement.appendChild(p);
+            }
+            /*
+            if(e.target.tagName.toLowerCase() == "div"){
+                e.target.setAttribute("class", "e");
+            }
+            */
+        }
+
+        function mouse_out(e){
+            if(e.target.tagName.toLowerCase() == "img"){
+                e.target.parentElement.style.height = "450px";
+                p = e.target.parentElement.querySelector("p");
+                p.remove();
+            }
+            /*
+            if(e.target.tagName.toLowerCase() == "div"){
+                e.target.setAttribute("class", "d");
+            }
+            */
+        }
+
+
+        function clear_and_show(){
+            show(true);
+        }
+
+        let index_to_start = 0;
+
+        function show(clear_all = false){
+            //window.alert(artist.value);
+            //window.alert(search.value);
+
+            // if the button is pressed
+            // clear all images shown before
+            // and reset index_to_start to zero
+            if(clear_all){
+                divs = items.querySelectorAll("div"); 
+                brs = items.querySelectorAll("br");
+                for(div of divs){
+                    div.remove();
+                }
+                for(br of brs){
+                    br.remove();
+                }
+                index_to_start = 0;
+            }
+
+
+            // now show up to 3 images that satisfy the conditions given by user
+            counter = 0;
+            for(let index = index_to_start; index < image_objects.length; index_to_start = ++index){
+                if(artist.value == "All" || artist.value == image_objects[index].artist){
+                    if(search.value == "" || search.value == image_objects[index].name){
+                        show_image(index);
+                        counter++;
+                        if(counter == 3){
+                            index_to_start = index + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        function display() {
+        window.alert("def");
+        }
+
+    </script>
+
+
+
+
+    <!--
+    <p><div class="a"><p>This is a piece of art for sale.</p></div></p>
+    <p><div class="b"><img class="a" src="Cool Image 1.jpg" alt="Cool Image 1"></div></p>
+
+    <p class="a">
+        Description:
+        <div class="b">
+            <section>
+                This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop! This is the Shop!
+
+            </section>
+        </div>
+    </p>
+    -->
+
+
+
+
+</body>
+
+</html>
