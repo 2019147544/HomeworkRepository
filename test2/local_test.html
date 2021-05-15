@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--<script src="temp.js"></script>-->
+</head>
+
+
+<body>
+
+    <h2>JavaScript addEventListener()</h2>
+
+    <p>This example uses the addEventListener() method to attach a click event to a button.</p>
+
+    <button id="myBtn">Try it</button>
+
+    <p id="demo"></p>
+
+    
+    <script>
+        str1 = './products.json';
+        str2 = "https://api.punkapi.com/v2/beers";
+        fetch(str1)
+        .then(function(response){
+            window.alert("success");
+            return response.json();
+        })
+        .then(function(data){
+            document.getElementById("demo").innerHTML = data[0].id;
+        })
+        .catch(function(error){
+            
+            window.alert(error);
+        });
+    </script>
+    
+
+</body>
+</html>
