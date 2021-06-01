@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Map</title>
+
+    <style type="text/css">
+      /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+      }
+    </style>
+    
+  </head>
+  <body>
+    <h1>Path Finder and Duration Calculator</h1>
+
+    <h2>Click on the map to choose the destination!</h2>
+
+    <h3 id = "message1" style = "color : red;"></h3>
+    <h3 id = "message2" style = "color : red;"></h3>
+    <h3 id = "message3" style = "color : red;"></h3>
+
+    <form>
+        <label>Enter expected speed: <input id="expected speed" type="number" min= "0" value="1"/> </label> m/s
+        <br>
+        <label>Calculate average speed and expected duration with the last <input id="input minutes" type="number" min="1" max="60" value="30"/></label> minute(s)
+    </form>
+
+    
+    <p id = "seconds"></p>
+    <p id = "user position"></p>
+    <p id = "distance"></p>   
+    <p id = "duration"><div id = "google duration"></div><div id = "expected speed duration"></div><div id = "average speed and duration"></div></p>
+
+    <input id="pac-input" type="text" placeholder="Search Box"/>
+    <!--The div element for the map -->
+    <div id="map"></div>
+
+    <button onclick = "toggle_developer_info()">Toggle Developer Info</button>
+    <div id ="developer info" style = "display: none;">
+    <p id = "distance record"></p>
+    <p id = "dist info"></p>
+    </div>
+
+
+
+
+
+
+
+    <script>
+        let seconds = 0;
+        let clock_active = false;
+        let clock_interval = '';
+
+        const max_distance_record_length = 3600; // maximum of number of seconds to record, number of seconds in 60 minutes in this case
+
+        function clock(){
+            document.getElementById("seconds").innerHTML = "Seconds passed since start: " + seconds++;
+
+            if(distance_record.length <= max_distance_record_length){
+                distance_record[distance_record.length] = distance.value;
+            }
+            else{
+                // shift distance_record elements by one to the left, and add new distance to the end of distance_record
+                for (let index = 0; index < distance_record.length - 1; index++) {
+                    distance_record[index] = distance_record[index + 1];
+                }
+                distance_record[distance_record.length - 1] = distance.value;
+            }
+            document.getElementById("distance record").innerHTML = distance_record;
+
+            show_durations();
+        }
+
+
+        let map_drawn = false;
+        let map = ''
+        let distance = 0;
+        let duration = 0;
+        let user_position = false;
+
+        let dest_position = false;
+        let clicked_position = false;
+
+        let directionsService = '';
+        let directionsRenderer = ''; 
+
+        let distance_record = [];
+
+        let message1 = document.getElementById("message1");
+
+        // Initialize and add the map
+        function initMap() {
+        
+            // The location of user
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(handle_user_position);
+            } else {
+                message1.innerHTML = "Geolocation cannot be done!";
+            }
+        }
+
+
+        function handle_user_position(position) {
+            document.getElementById("user position").innerHTML = "User Latitude: " + position.coords.latitude +
+            "<br>User Longitude: " + position.coords.longitude;
+            user_position = {lat: position.coords.latitude, lng: position.coords.longitude};
+        
+
+            if(!map_drawn){
+                map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 10,
+                    center: user_position,
+                });
+                directionsService = new google.maps.DirectionsService();
+                directionsRenderer = new google.maps.DirectionsRenderer({preserveViewport: true}); 
+                directionsRenderer.setMap(map);
+
+                make_search_box();
+
+                google.maps.event.addListener(map, 'click', set_clicked_position);
+
+                map_drawn = true;
+            }
+
+            else{
+                if(dest_position !== false)
+                    draw_route(false);
+            }
+        }   
+        
+        
+
+        function set_clicked_position(event){     
+            clicked_position = event.latLng;
+            draw_route(true);
+        }     
+        
+        function reset_all(){
+            clearInterval(clock_interval);
+
+            seconds = 0;
+            clock_active = false;
+            distance_record = [];
+        }
+
+        
+        function draw_route(map_clicked){
+            let position = '';
+            if(map_clicked)
+                position = clicked_position;
+            else
+                position = dest_position;
+
+            var request = {
+                origin: user_position,
+                destination: position,
+                travelMode: 'TRANSIT'
+            };
+            
+            directionsService.route(request, function (result, status) {    
+
+                if(status == 'OK'){
+                    directionsRenderer.setDirections(result);
+                    if(map_clicked){
+                        message1.innerHTML = "New destination selected!"; 
+                        if(dest_position !== false)
+                            reset_all();
+                        dest_position = clicked_position;
+                    }
+                    request_distance();
+                }
+
+                else if(map_clicked){
+                    message1.innerHTML = "Cannot find a route to that point!";
+                }
+            });
+        }
+
+        function request_distance(){
+            // start handling distance
+
+            var service = new google.maps.DistanceMatrixService();
+            service.getDistanceMatrix(
+                {
+                origins: [user_position],
+                destinations: [dest_position],
+                travelMode: 'TRANSIT',
+                }, handle_distance_and_duration);
+
+        }
+
+
+        function handle_distance_and_duration(response, status) {
+
+            let str = JSON.stringify(response);
+            document.getElementById("dist info").innerHTML = str;
+            distance = response.rows[0].elements[0].distance;
+            duration = response.rows[0].elements[0].duration; 
+            document.getElementById("distance").innerHTML = "Distance: " + distance.text + " ("+ distance.value + " m)";
+            document.getElementById("google duration").innerHTML = "Duration given by Google: " + duration.text + " (" + duration.value + ' seconds)';
+            
+            if(!clock_active){
+                clock_interval = setInterval(clock, 1000);
+                clock_active = true;
+            }
+            
+            // show_durations();
+        }
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDMZmq2ROtTogEZTVNxuQj9jLtojE4zuk&callback=initMap&libraries=places&v=weekly"
+      async
+    ></script>
+
+    <script>        
+
+        //document.addEventListener('DOMContentLoaded', show_durations);
+
+        document.getElementById("expected speed").addEventListener('input', show_durations);
+        document.getElementById("input minutes").addEventListener('input', show_durations);
+
+        function show_durations(){
+            if(dest_position === false)
+                return;
+
+            let exp_speed = document.getElementById("expected speed").value;
+            if(exp_speed > 0){
+                let exp_seconds = Math.round(distance.value / exp_speed);
+                let exp_minutes = Math.round(exp_seconds / 60) % 60;
+                let exp_hours = Math.floor(Math.round(exp_seconds / 60) / 60);
+                if(exp_hours == 0)
+                    document.getElementById("expected speed duration").innerHTML = "Duration based on expected speed: " + exp_minutes + "분 (" + exp_seconds + " seconds)";
+                else
+                    document.getElementById("expected speed duration").innerHTML = "Duration based on expected speed: " + exp_hours + "시간 "
+                        + exp_minutes + "분 (" + exp_seconds + " seconds)";
+            }
+            else
+                document.getElementById("expected speed duration").innerHTML = "Duration based on expected speed: " + "Cannot calculate with input that is not positive!";
+
+                
+            let input_minutes = document.getElementById("input minutes").value * 1;
+            let input_seconds = input_minutes * 60;
+
+            if(!Number.isInteger(input_minutes) || input_minutes <= 0){
+                document.getElementById("average speed and duration").innerHTML = "Average speed during the last " + input_minutes + " minute(s)" + ", "
+                    + "Duration based on this average speed: " + "Cannot calculate with input that is not a positive integer!";
+                return;
+            }
+
+            if(distance_record.length > input_seconds){
+                let average_speed = (distance_record[distance_record.length - input_seconds - 1] - distance_record[distance_record.length - 1]) / input_seconds;
+                if(average_speed > 0){
+
+                let calc_seconds = Math.round(distance.value / average_speed);
+                let calc_minutes = Math.round(calc_seconds / 60) % 60;
+                let calc_hours = Math.floor(Math.round(calc_seconds / 60) / 60);
+
+                let calc_duration = "";
+                if(calc_hours != 0)
+                    calc_duration = calc_hours + "시간 ";
+                calc_duration += calc_minutes + "분 (" + calc_seconds + " seconds)";
+
+                document.getElementById("average speed and duration").innerHTML = "Average speed during the last " + input_minutes + " minute(s): " + average_speed + ", "
+                    + "Duration based on this average speed: " + calc_duration;
+                }
+
+                else{
+                    document.getElementById("average speed and duration").innerHTML = "Average speed during the last " + input_minutes + " minute(s)" + ", "
+                    + "Duration based on this average speed: " + "Cannot calculate because you have not gotten closer to the destination during the last "
+                    + input_minutes + " minute(s)!";
+                }
+            }
+            else{
+                document.getElementById("average speed and duration").innerHTML = "Average speed during the last " + input_minutes + " minute(s)" + ", "
+                    + "Duration based on this average speed: " + "Cannot calculate yet!";
+            }
+        }
+
+        function toggle_developer_info(){
+            let dev_info = document.getElementById("developer info");
+            if(dev_info.style.display == "none")
+                dev_info.style.display = "block";
+            else{
+                if(dev_info.style.display == "block")
+                dev_info.style.display = "none";
+            }
+
+        }
+    </script>
+        
+    <script>
+        // handle search functionality
+        let markers = [];
+
+        function make_search_box(){
+            let input = document.getElementById("pac-input");
+            let searchBox = new google.maps.places.SearchBox(input);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+                // Clear out the old markers.
+                markers.forEach((marker) => {
+                    marker.setMap(null);
+                });
+                markers = [];
+                // For each place, get the icon, name and location.
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach((place) => {
+                    if (!place.geometry || !place.geometry.location) {
+                        document.getElementById("message3").innerHTML = "Returned place contains no geometry";
+                        return;
+                    }
+                    const icon = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25),
+                    };
+                    // Create a marker for each place.
+                    markers.push(
+                        new google.maps.Marker({
+                            map,
+                            icon,
+                            title: place.name,
+                            position: place.geometry.location,
+                        })
+                    );
+
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+        }
+
+
+    </script>
+  </body>
+</html>
